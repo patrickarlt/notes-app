@@ -11,7 +11,7 @@ export class NotesStore {
     private notesDatabase: NotesDatabaseService
   ) {}
 
-  public _notes = new BehaviorSubject<Note[]>([]);
+  private _notes = new BehaviorSubject<Note[]>([])
 
   get notes () :Observable<Note[]> {
     return this._notes.asObservable();
@@ -49,6 +49,8 @@ export class NotesStore {
         let notes = this._notes.getValue();
         let index = notes.findIndex((note) => note._id === deleted._id);
         let deletedNotes = notes.splice(index, 1)
+        console.log(notes, index, deletedNotes);
+        console.log(this);
         this._notes.next(notes);
       }
     );
