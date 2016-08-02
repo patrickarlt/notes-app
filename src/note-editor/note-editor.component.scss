@@ -1,0 +1,30 @@
+:host {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-wrapper {
+  flex: 1;
+  padding: 1rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.control-bar {
+  display: flex;
+  border-top: 1px solid #bdc3c7;
+  position: relative;
+  z-index: 1;
+
+  button {
+    flex: 0;
+    box-sizing: border-box;
+  }
+
+  tag-input {
+    flex: 1;
+    box-sizing: border-box;
+  }
+}
+

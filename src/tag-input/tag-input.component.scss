@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+input {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+tag-input-item {
+  flex: 0;
+}

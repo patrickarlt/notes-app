@@ -1,0 +1,7 @@
+{
+  "db": {
+    "url": "https://john.cloudant.com/notes",
+    "username": "john",
+    "password": "password123"
+  }
+}

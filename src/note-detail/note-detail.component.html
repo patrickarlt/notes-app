@@ -1,0 +1,10 @@
+<note-editor
+  #editor
+  [note]="note"
+  (contentChange)="onContentChange($event)"
+  (tagChange)="onTagChange($event)"
+  (scrollPercentageChange)="onScrollPercentageChange($event)"></note-editor>
+
+<note-preview
+  [scrollPercentage]="scrollPercentage"
+  [content]="previewContent"></note-preview>

@@ -1,0 +1,15 @@
+<div class="editor-wrapper" (scroll)=onScroll($event)>
+  <codemirror-editor
+    [content]="note?.content"
+    ></codemirror-editor>
+</div>
+
+<div class="control-bar">
+  <tag-input
+    placeholder="Add an tag"
+    [tagsList]="note.tags"
+    delimiterCode="188">
+  </tag-input>
+
+  <button (click)="onDelete()">Delete</button>
+</div>

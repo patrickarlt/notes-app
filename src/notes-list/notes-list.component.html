@@ -1,0 +1,10 @@
+<form [formGroup]="searchForm" (ngSubmit)="onSubmit(searchForm.value)">
+  <input [formControl]="search" #searchInput type="search" placeholder="Search or or create  a new note">
+  <button type="submit">Create Note</button>
+</form>
+
+<nav>
+  <a *ngFor="let note of notesStore.notes | async;" (click)="navigateToNote(note)"  >
+    {{note.title}}
+  </a>
+</nav>

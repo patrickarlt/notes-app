@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+nav {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  background: white;
+}
+
+form {
+  display: flex;
+  width: 100%;
+}
+
+input {
+  flex: 1;
+  border-radius: 0;
+  -webkit-appearance: none;
+  border: none;
+  border-bottom: 1px solid #bdc3c7;
+  box-sizing: border-box;
+}
+
+button {
+  flex: 0;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+
+a {
+  padding: 1rem;
+  display: block;
+  border-bottom: 1px solid #bdc3c7
+}
