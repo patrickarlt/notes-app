@@ -4,6 +4,7 @@ import { NotesListComponent } from './notes-list/notes-list.component';
 import { Database } from './shared/db';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 import { NotesDatabaseService } from './shared/notes-db.service';
+import { NotesStore } from './shared/notes-store.service';
 
 @Component({
   selector: 'notes-app',
@@ -14,7 +15,8 @@ import { NotesDatabaseService } from './shared/notes-db.service';
   encapsulation: ViewEncapsulation.None,
   providers: [
     { provide: Database, useValue: Database },
-    NotesDatabaseService
+    NotesDatabaseService,
+    NotesStore
   ],
   directives: [
     NotesListComponent,

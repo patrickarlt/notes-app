@@ -1,10 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ViewChild, EventEmitter, Input, Output } from '@angular/core';
 import { Note } from '../shared/note';
+import { FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormGroup, FormControl } from '@angular/forms';
 import { ViewEncapsulation } from '@angular/core';
 import { CodeMirrorEditorComponent } from '../codemirror-editor/codemirror-editor.component';
 import { TagInputComponent } from '../tag-input/tag-input.component';
-import { NotesStore } from '../shared/notes-store.service'
-import { Router } from '@angular/router';
+import { NotesDatabaseService } from '../shared/notes-db.service'
+import { NotesStore } from '../shared/notes-store.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NotePreviewComponent } from '../note-preview/note-preview.component';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'note-editor',
@@ -14,44 +21,90 @@ import { Router } from '@angular/router';
   ],
   directives: [
     CodeMirrorEditorComponent,
-    TagInputComponent
-  ],
-  providers: [NotesStore]
+    TagInputComponent,
+    NotePreviewComponent,
+    FORM_DIRECTIVES,
+    REACTIVE_FORM_DIRECTIVES
+  ]
 })
 export class NoteEditorComponent {
-  @Input() note: Note;
-  @Output() contentChange = new EventEmitter<string>();
-  @Output() tagChange = new EventEmitter<string[]>();
-  @Output() scrollPercentageChange = new EventEmitter<number>();
+  private note: Note = {
+    content: '',
+    tags: [],
+    edited: new Date(),
+    created: new Date(),
+    title: ''
+  };
+  private loading: boolean;
+  private scrollPercentage: number = 0;
+  private editorSubscription: any;
+  private paramsSubscription: any;
+  private routerSubsciption: any;
+
+  @ViewChild('noteForm') noteForm;
 
   constructor (
     private router: Router,
+    private route: ActivatedRoute,
+    private notesDatabase: NotesDatabaseService,
     private notesStore: NotesStore) {}
 
-  onContentChange (content: string) {
-    this.contentChange.emit(content);
+  ngOnInit() {
+    this.routerSubsciption = this.route.params.subscribe((params: any) => {
+      this.notesStore.loadNote(params.id)
+        .catch((error) => {
+          if(error.status === 404) {
+            this.router.navigate(['notes']);
+          }
+        });
+    });
+
+    this.paramsSubscription = Observable.combineLatest(
+      this.route.params,
+      this.notesStore.notes,
+      (params :any, notes) => {
+        return notes.find((note) => {
+          return note._id === params.id;
+        });
+      })
+      .subscribe((note) => {
+        if(note) {
+          this.note = note;
+          this.loading = false;
+          this.scrollPercentage = 0;
+        } else {
+          this.loading = true;
+        }
+      });
+  }
+
+  ngAfterViewInit() {
+    this.editorSubscription = this.noteForm.control.valueChanges
+      .debounceTime(1000)
+      .distinctUntilChanged()
+      .subscribe((values) => {
+        this.note.edited = new Date();
+        this.notesStore.updateNote(this.note);
+      });
+  }
+
+  ngOnDestroy () {
+    this.paramsSubscription.unsubscribe();
+    this.editorSubscription.unsubscribe();
+    this.routerSubsciption.unsubscribe();
   }
 
   onScroll (e) {
     var a = e.target.scrollTop;
     var b = e.target.scrollHeight - e.target.clientHeight;
     var c = a / b;
-    this.scrollPercentageChange.emit(this.round(c, 2));
-  }
-
-  onTagChange (tags: string[]) {
-    this.note.tags = tags;
-    this.tagChange.emit(tags);
+    this.scrollPercentage= this.round(c, 2);
   }
 
   onDelete () {
-    let obs = this.notesStore.deleteNote(this.note);
-
-    obs.subscribe(
-      (deleted) => {
-        this.router.navigate(['/notes']);
-      }
-    )
+    let obs = this.notesStore.deleteNote(this.note).then((deleted) => {
+      this.router.navigate(['/notes']);
+    });
   }
 
   round (number: number, precision: number) {

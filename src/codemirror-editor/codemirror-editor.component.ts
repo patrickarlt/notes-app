@@ -1,9 +1,12 @@
-import { Component, ElementRef, ViewChild, ViewEncapsulation, Input, Output, EventEmitter, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewEncapsulation, AfterViewInit, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as CodeMirror from 'codemirror';
 import 'codemirror/mode/gfm/gfm';
 import 'codemirror/addon/edit/continuelist';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/anyword-hint';
+
+const noop = () => {};
 
 @Component({
   selector: 'codemirror-editor',
@@ -13,14 +16,32 @@ import 'codemirror/addon/hint/anyword-hint';
     require('codemirror/addon/hint/show-hint.css'),
     require('./codemirror-editor.component.scss'),
   ],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CodeMirrorEditorComponent),
+      multi: true
+    }
+  ]
 })
-export class CodeMirrorEditorComponent implements OnChanges, AfterViewInit {
+export class CodeMirrorEditorComponent implements ControlValueAccessor {
   private cm :any;
   private timeout;
+  private _content: string = '';
 
-  @Input() content: string;
-  @Output() contentChange = new EventEmitter<string>();
+  get content () {
+    return this._content;
+  }
+
+  set content (value: any) {
+    this._content = value || '';
+
+    if (this.cm) {
+      this.cm.getDoc().setValue(this.content);
+    }
+  }
+
   @ViewChild('editor') editor :ElementRef;
 
   constructor () {}
@@ -35,8 +56,10 @@ export class CodeMirrorEditorComponent implements OnChanges, AfterViewInit {
       }
     });
 
+    this.cm.getDoc().setValue(this.content);
+
     this.cm.on('changes', () => {
-      this.contentChange.emit(this.cm.getValue());
+      this.onChangeCallback(this.cm.getValue());
     });
 
     this.cm.on("inputRead", (cm) => {
@@ -67,10 +90,18 @@ export class CodeMirrorEditorComponent implements OnChanges, AfterViewInit {
     });
   }
 
-  ngOnChanges (change) {
-    if (this.cm && change.content.currentValue) {
-      this.cm.getDoc().setValue(change.content.currentValue);
-      this.cm.focus();
-    }
+  writeValue(value: any) {
+    this.content = value || '';
+  }
+
+  private onTouchedCallback: () => void = noop;
+  private onChangeCallback: (_: any) => void = noop;
+
+  registerOnChange(fn) {
+    this.onChangeCallback = fn;
+  }
+
+  registerOnTouched(fn) {
+    this.onTouchedCallback = fn;
   }
 }

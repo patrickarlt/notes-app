@@ -4,6 +4,7 @@ import { Note } from './note';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/find';
 
 @Injectable()
 export class NotesStore {
@@ -17,61 +18,68 @@ export class NotesStore {
     return this._notes.asObservable();
   }
 
-  loadNotes () :Observable<Note[]> {
-    let obs = this.notesDatabase.getAllNotes();
-
-    obs.subscribe(
-      (notes:Note[]) => {
-        this._notes.next(notes)
-      }
-    );
-
-    return obs;
-  }
-
-  addNote (note: Note) {
-    let obs = this.notesDatabase.addNote(note);
-
-    obs.subscribe(
-      (res) => {
-        this._notes.next(this._notes.getValue().concat([note]));
-      }
-    );
-
-    return obs;
-  }
-
-  deleteNote (deleted: Note) {
-    let obs = this.notesDatabase.deleteNote(deleted);
-
-    obs.subscribe(
-      res => {
+  loadNote (id: string) :Promise<Note> {
+    return this.notesDatabase.getNote(id)
+      .then((note: Note) => {
         let notes = this._notes.getValue();
-        let index = notes.findIndex((note) => note._id === deleted._id);
-        let deletedNotes = notes.splice(index, 1)
-        console.log(notes, index, deletedNotes);
-        console.log(this);
+        let index = notes.findIndex((note) => {
+          return note._id === id;
+        });
+
+        if(index === -1) {
+          notes.push(note);
+        } else {
+          notes[index] = note;
+        }
+
         this._notes.next(notes);
-      }
-    );
 
-    return obs;
+        return note;
+      });
   }
 
-  updateNote () {
-
-  }
-
-  searchNotes (term: string) {
-    let obs = this.notesDatabase.searchNotes(term);
-
-    obs.subscribe(
-      ((notes:Note[]) => {
+  loadNotes () :Promise<Note[]> {
+    return this.notesDatabase.getAllNotes()
+      .then((notes:Note[]) => {
         this._notes.next(notes);
-      })
-    );
-
-    return obs;
+        return notes;
+      });
   }
 
+  addNote (note: Note) :Promise<Note> {
+    return this.notesDatabase.addNote(note)
+      .then((note: Note) => {
+        this._notes.next(this._notes.getValue().concat([note]));
+        return note;
+      });
+  }
+
+  deleteNote (deleted: Note) :Promise<Boolean> {
+    return this.notesDatabase.deleteNote(deleted)
+    .then((success) => {
+      let notes = this._notes.getValue();
+      let index = notes.findIndex((note) => note._id === deleted._id);
+      let deletedNotes = notes.splice(index, 1)
+      this._notes.next(notes);
+      return success;
+    });
+  }
+
+  updateNote (note: Note) :Promise<Note> {
+    return this.notesDatabase.updateNote(note)
+      .then((note: Note) => {
+        let notes = this._notes.getValue();
+        let index = notes.findIndex((n) => n._id === note._id);
+        notes[index] = note;
+        this._notes.next(notes);
+        return note;
+      });
+  }
+
+  searchNotes (term: string) :Promise<Note[]> {
+    return this.notesDatabase.searchNotes(term).then((notes:Note[]) => {
+      this._notes.next(notes);
+      return notes;
+    });
+  }
 }

@@ -1,13 +1,11 @@
 import { Component, ViewChild, ElementRef, OnInit, Renderer } from '@angular/core';
 import { ROUTER_DIRECTIVES, Router }  from '@angular/router';
 import { FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormGroup, FormControl } from '@angular/forms';
-import { NotesService } from '../shared/notes.service.ts';
-import { NoteService } from '../shared/note.service.ts';
 import { Note } from '../shared/note';
-import { NotesStore } from '../shared/notes-store.service';
 import { Subject } from 'rxjs/Subject';
 import { Observer } from 'rxjs/Observer';
 import { Observable } from 'rxjs/Observable';
+import { NotesStore } from '../shared/notes-store.service';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
@@ -21,7 +19,6 @@ import 'rxjs/add/operator/startWith';
   styles: [
     require('./notes-list.component.scss')
   ],
-  providers: [NotesService, NoteService, NotesStore],
   directives: [ROUTER_DIRECTIVES, FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES],
   host: {
     '(document:keyup)': 'hotkey($event)'
@@ -61,19 +58,15 @@ export class NotesListComponent {
   }
 
   onSubmit (formValues: any) {
-    let obs = this.notesStore.addNote({
+    this.notesStore.addNote({
       title: formValues.search,
       content: `# ${formValues.search}`,
       created: new Date(),
       edited: new Date(),
       tags: []
+    }).then((note) => {
+      this.navigateToNote(note);
     });
-
-    obs.subscribe(
-      (note) => {
-        this.navigateToNote(note);
-      }
-    )
   }
 
   focusInput () {
@@ -86,13 +79,13 @@ export class NotesListComponent {
   }
 
   navigateToNote (note: Note) {
-    this.clearSuggestions();
-    this.router.navigate(['/note', note._id]);
+    this.search.updateValue('');
+    this.router.navigate(['note', note._id]);
   }
 
   hotkey ($event: KeyboardEvent) {
     if($event.keyCode === 27) {
-      this.router.navigate(['/notes']);
+      this.router.navigate(['notes']);
       this.clearSuggestions();
       this.focusInput();
     }

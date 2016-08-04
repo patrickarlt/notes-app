@@ -1,5 +1,8 @@
-import {Component, HostBinding, Input, Output, EventEmitter} from '@angular/core';
+import {Component, HostBinding, Input, Output, EventEmitter, forwardRef} from '@angular/core';
 import { TagInputItemComponent } from '../tag-input-item/tag-input-item.component';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+const noop = () => {};
 
 @Component({
   selector: 'tag-input',
@@ -7,22 +10,37 @@ import { TagInputItemComponent } from '../tag-input-item/tag-input-item.componen
   styles: [
     require('./tag-input.component.scss')
   ],
-  directives: [TagInputItemComponent]
+  directives: [TagInputItemComponent],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TagInputComponent),
+      multi: true
+    }
+  ]
 })
-export class TagInputComponent {
+export class TagInputComponent implements ControlValueAccessor {
   @Input() placeholder: string = 'Add a tag';
-  @Input() tagsList: string[];
   @Input() delimiterCode: string = '188';
   @Input() addOnBlur: boolean = true;
   @Input() addOnEnter: boolean = true;
   @Input() addOnPaste: boolean = true;
   @Input() allowedTagsPattern: RegExp = /.+/;
-  @Output() tagsListChange = new EventEmitter<string[]>();
   @HostBinding('class.ng2-tag-input-focus') isFocussed;
 
   public inputValue: string = '';
   public delimiter: number;
   public selectedTag: number;
+  private _tagsList: string[] = [];
+
+  get tagsList () {
+    return this._tagsList;
+  }
+
+  set tagsList (value) {
+    this._tagsList = value;
+    this.onChangeCallback(this.tagsList);
+  }
 
   constructor() {
   }
@@ -56,6 +74,7 @@ export class TagInputComponent {
   inputBlurred(event) {
     this.addOnBlur && this._addTags([this.inputValue]);
     this.isFocussed = false;
+    this.onTouchedCallback();
   }
 
   inputFocused(event) {
@@ -69,6 +88,23 @@ export class TagInputComponent {
     let tagsToAdd = tags.filter((tag) => this._isTagValid(tag));
     this._addTags(tagsToAdd);
     setTimeout(() => this.inputValue = '', 3000);
+  }
+
+  writeValue(value: any) {
+    if(value !== undefined) {
+      this.tagsList = value;
+    }
+  }
+
+  private onTouchedCallback: () => void = noop;
+  private onChangeCallback: (_: any) => void = noop;
+
+  registerOnChange(fn) {
+    this.onChangeCallback = fn;
+  }
+
+  registerOnTouched(fn) {
+    this.onTouchedCallback = fn;
   }
 
   private _splitString(tagString: string) {
@@ -86,13 +122,11 @@ export class TagInputComponent {
     this.tagsList = this.tagsList.concat(validTags);
     this._resetSelected();
     this._resetInput();
-    this.tagsListChange.emit(this.tagsList);
   }
 
   private _removeTag(tagIndexToRemove) {
     this.tagsList.splice(tagIndexToRemove, 1);
     this._resetSelected();
-    this.tagsListChange.emit(this.tagsList);
   }
 
   private _handleBackspace() {

@@ -1,8 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Database } from './db';
 import { Note } from './note';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
 
 @Injectable()
 export class NotesDatabaseService {
@@ -10,67 +8,74 @@ export class NotesDatabaseService {
     @Inject(Database) private database
   ) { }
 
-  getAllNotes () :Observable<Note[]> {
-    return Observable.fromPromise(this.database.allDocs({
+  getAllNotes () :Promise<Note[]> {
+    return this.database.allDocs({
       include_docs: true
-    }))
-      .map((response: any) => {
-        return response.rows
-          .map(row => row.doc)
-          .map(doc => {
-            doc.created = new Date(doc.created);
-            doc.edited = new Date(doc.edited);
-            return doc;
-          });
-      });
+    })
+    .then((response: any) => {
+      return response.rows
+        .map(row => row.doc)
+        .map(doc => {
+          doc.created = new Date(doc.created);
+          doc.edited = new Date(doc.edited);
+          return doc;
+        });
+    });
   }
 
-  getNote (id: string) :Observable<Note> {
-    return Observable.fromPromise(this.database.get(id))
-      .map((document: any) => {
+  getNote (id: string) :Promise<Note> {
+    return this.database.get(id)
+      .then((document: any)=> {
         document.created = new Date(document.created);
         document.edited = new Date(document.edited);
         return document;
       });
   }
 
-  addNote(note: Note) :Observable<Note> {
-    return Observable.fromPromise(this.database.post(note))
-    .flatMap((response: any) => {
+  addNote(note: Note) :Promise<Note> {
+    return this.database.post(note)
+    .then((response: any) => {
       return this.getNote(response.id);
     });
   }
 
-  updateNote(note: Note) :Observable<Note> {
-    return Observable.fromPromise(this.database.post(note))
-    .flatMap((response: any) => {
+  updateNote(updatedNote: Note) :Promise<Note> {
+    return this.getNote(updatedNote._id)
+    .then((note: Note) => {
+      updatedNote._rev = note._rev;
+      return this.database.put(updatedNote);
+    })
+    .then((response: any) => {
       return this.getNote(response.id);
     });
   }
 
-  deleteNote(note: Note) :Observable<any> {
-    return Observable.fromPromise(this.database.remove(note))
+  deleteNote(note: Note) :Promise<boolean> {
+    return this.getNote(note._id)
+      .then((note: Note) => {
+        return this.database.remove(note);
+      });
   }
 
-  searchNotes (term: String) :Observable<Note[]> {
+  searchNotes (term: String) :Promise<Note[]> {
     if (term.length <= 0) {
       return this.getAllNotes();
     }
 
-    return Observable.fromPromise(this.database.search({
+    return this.database.search({
       query: term,
       fields: ['title', 'tags'],
       include_docs: true,
       highlighting: true
-    }))
-      .map((response: any) => {
-        return response.rows
-          .map(row => row.doc)
-          .map(doc => {
-            doc.created = new Date(doc.created);
-            doc.edited = new Date(doc.edited);
-            return doc;
-          });
-      });
+    })
+    .then((response: any) => {
+      return response.rows
+        .map(row => row.doc)
+        .map(doc => {
+          doc.created = new Date(doc.created);
+          doc.edited = new Date(doc.edited);
+          return doc;
+        });
+    });
   }
 }

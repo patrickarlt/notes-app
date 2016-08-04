@@ -1,15 +1,26 @@
-<div class="editor-wrapper" (scroll)=onScroll($event)>
-  <codemirror-editor
-    [content]="note?.content"
-    ></codemirror-editor>
+<div [hidden]="!loading">
+  Loading&hellip;
 </div>
 
-<div class="control-bar">
-  <tag-input
-    placeholder="Add an tag"
-    [tagsList]="note.tags"
-    delimiterCode="188">
-  </tag-input>
+<form [hidden]="loading" #noteForm="ngForm">
+  <div class="editor-wrapper" (scroll)=onScroll($event)>
+    <codemirror-editor
+      [(ngModel)]="note.content"
+      name="content"
+      ></codemirror-editor>
+  </div>
+  <div class="control-bar">
+    <tag-input
+      [(ngModel)]="note.tags"
+      name="tags"
+      placeholder="Add an tag"
+      delimiterCode="188">
+    </tag-input>
 
-  <button (click)="onDelete()">Delete</button>
-</div>
+    <button (click)="onDelete()">Delete</button>
+  </div>
+</form>
+
+<note-preview
+  [scrollPercentage]="scrollPercentage"
+  [content]="note.content"></note-preview>
