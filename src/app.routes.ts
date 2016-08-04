@@ -1,3 +1,8 @@
+/**
+ * This entire file exists to configure the routes for the application. It is pretty much verbatum from the routing documentation.
+ *
+ * https://angular.io/docs/ts/latest/guide/router.html#!#route-config
+ */
 import { provideRouter, RouterConfig } from '@angular/router';
 import { SelectNoteComponent } from './select-note/select-note.component';
 import { NoteEditorComponent } from './note-editor/note-editor.component';

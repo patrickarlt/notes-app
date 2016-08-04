@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import {ViewEncapsulation} from '@angular/core';
-import { NotesListComponent } from './notes-list/notes-list.component';
-import { Database } from './shared/db';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
+import { Database } from './shared/db';
+import { NotesListComponent } from './notes-list/notes-list.component';
 import { NotesDatabaseService } from './shared/notes-db.service';
 import { NotesStore } from './shared/notes-store.service';
 
