@@ -8,10 +8,10 @@ import { NotesDatabaseService } from '../shared/notes-db.service'
 import { NotesStore } from '../shared/notes-store.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NotePreviewComponent } from '../note-preview/note-preview.component';
+import { RoundPipe } from '../shared/round.pipe';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/filter';
+import { ScrollTopDirective } from '../shared/scrollTop.directive';
 
 @Component({
   selector: 'note-editor',
@@ -24,8 +24,10 @@ import 'rxjs/add/operator/filter';
     TagInputComponent,
     NotePreviewComponent,
     FORM_DIRECTIVES,
-    REACTIVE_FORM_DIRECTIVES
-  ]
+    REACTIVE_FORM_DIRECTIVES,
+    ScrollTopDirective
+  ],
+  pipes: [RoundPipe]
 })
 export class NoteEditorComponent {
   private note: Note = {
@@ -52,6 +54,9 @@ export class NoteEditorComponent {
   ngOnInit() {
     this.routerSubsciption = this.route.params.subscribe((params: any) => {
       this.notesStore.loadNote(params.id)
+        .then(() => {
+          this.scrollPercentage = 0;
+        })
         .catch((error) => {
           if(error.status === 404) {
             this.router.navigate(['notes']);
@@ -68,13 +73,13 @@ export class NoteEditorComponent {
         });
       })
       .subscribe((note) => {
-        if(note) {
-          this.note = note;
-          this.loading = false;
-          this.scrollPercentage = 0;
-        } else {
+        if (!note) {
           this.loading = true;
+          return;
         }
+
+        this.note = note;
+        this.loading = false;
       });
   }
 
@@ -95,22 +100,13 @@ export class NoteEditorComponent {
   }
 
   onScroll (e) {
-    var a = e.target.scrollTop;
-    var b = e.target.scrollHeight - e.target.clientHeight;
-    var c = a / b;
-    this.scrollPercentage= this.round(c, 2);
+    let el = e.target;
+    this.scrollPercentage = el.scrollTop / (el.scrollHeight - el.clientHeight);
   }
 
   onDelete () {
-    let obs = this.notesStore.deleteNote(this.note).then((deleted) => {
+    this.notesStore.deleteNote(this.note).then((deleted) => {
       this.router.navigate(['/notes']);
     });
-  }
-
-  round (number: number, precision: number) {
-    var factor = Math.pow(10, precision);
-    var tempNumber = number * factor;
-    var roundedTempNumber = Math.round(tempNumber);
-    return roundedTempNumber / factor;
   }
 }

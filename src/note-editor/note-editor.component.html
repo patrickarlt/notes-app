@@ -3,7 +3,7 @@
 </div>
 
 <form [hidden]="loading" #noteForm="ngForm">
-  <div class="editor-wrapper" (scroll)=onScroll($event)>
+  <div class="editor-wrapper" (scroll)=onScroll($event) [scrollTop]="scrollPercentage">
     <codemirror-editor
       [(ngModel)]="note.content"
       name="content"
@@ -22,5 +22,5 @@
 </form>
 
 <note-preview
-  [scrollPercentage]="scrollPercentage"
+  [scrollPercentage]="scrollPercentage | round:2"
   [content]="note.content"></note-preview>

@@ -1,1 +1,8 @@
-<div #preview [innerHTML]="content | markdown" class="preview"></div>
+<!--
+  Now we can use our custom `scrollTop` directive to manage the scroll position
+  and our `markdown` pipe to preview the content.
+-->
+<div
+  [scrollTop]="scrollPercentage"
+  [innerHTML]="content | markdown"
+  class="preview"></div>

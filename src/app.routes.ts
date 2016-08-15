@@ -1,5 +1,8 @@
 /**
- * This entire file exists to configure the routes for the application. It is pretty much verbatum from the routing documentation.
+ * This entire file exists to configure the routes for the application.
+ * It is pretty much verbatum from the routing documentation. All the
+ * components referenced in routes must be in their parent components
+ * `precompile` array or Angular will complain.
  *
  * https://angular.io/docs/ts/latest/guide/router.html#!#route-config
  */

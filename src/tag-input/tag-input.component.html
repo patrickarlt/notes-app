@@ -1,8 +1,7 @@
 <tag-input-item
     [text]="tag"
     [index]="index"
-    [selected]="selectedTag === index"
-    (tagRemoved)="_removeTag($event)"
+    (tagRemoved)="removeTag($event)"
     *ngFor="let tag of tagsList; let index = index">
   </tag-input-item>
 

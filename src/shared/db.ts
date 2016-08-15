@@ -1,11 +1,11 @@
 import * as PouchDB from 'pouchdb';
 import * as PouchDBQuickSearch from 'pouchdb-quick-search';
-const Config = require('../config.json');
 
+/**
+ * Basic initalization of the PouchDB database.
+ */
 PouchDB.plugin(PouchDBQuickSearch);
 
-const LOCAL = new PouchDB('notes_dev_2');
+const Database = new PouchDB('notes_dev');
 
-LOCAL.on('error', function (err) { debugger; });
-
-export { LOCAL as Database};
+export {Database as Database};

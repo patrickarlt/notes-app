@@ -54,7 +54,9 @@ if (process.env.ENV === 'production') {
 }
 
 /**
- * Call the bootstraping function to start the application, making sure to pass in the providers that we need for various things like forms and routes.
+ * Call the bootstraping function to start the application, making sure
+ * to pass in the providers that we need for various things like forms
+ *  and routes.
  *
  * https://angular.io/docs/ts/latest/quickstart.html
  * https://angular.io/docs/ts/latest/guide/webpack.html

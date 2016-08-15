@@ -1,10 +1,16 @@
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit(searchForm.value)">
-  <input [formControl]="search" #searchInput type="search" placeholder="Search or or create  a new note">
+  <input #searchInput [formControl]="search" type="search" placeholder="Search or or create  a new note">
   <button type="submit">Create Note</button>
 </form>
 
-<nav>
-  <a *ngFor="let note of notesStore.notes | async;" (click)="navigateToNote(note)"  >
+<span *ngIf="!loaded">Loading&hellip;</span>
+
+<nav *ngIf="loaded">
+  <!--
+    the async pipe will automatically subscribe to `notes` and update when
+    it changes
+  -->
+  <a *ngFor="let note of notes | async;" (click)="navigateToNote(note)"  >
     {{note.title}}
   </a>
 </nav>
