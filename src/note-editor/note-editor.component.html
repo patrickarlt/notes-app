@@ -6,16 +6,14 @@
   <div class="editor-wrapper" (scroll)=onScroll($event) [scrollTop]="scrollPercentage">
     <codemirror-editor
       [(ngModel)]="note.content"
-      name="content"
-      ></codemirror-editor>
+      name="content"></codemirror-editor>
   </div>
   <div class="control-bar">
     <tag-input
       [(ngModel)]="note.tags"
       name="tags"
       placeholder="Add an tag"
-      delimiterCode="188">
-    </tag-input>
+      delimiterCode="188"></tag-input>
 
     <button (click)="onDelete()">Delete</button>
   </div>
