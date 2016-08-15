@@ -132,6 +132,7 @@ I made use of a lot of resources to learn Angular 2. Only use articles that are 
 
 I also found serveral external resources very helpful for building specific parts of this application:
 
+* [Angular 2.0 Gitter Chat](https://gitter.im/angular/angular) - Community chat for Angular 2.0. Really helpful with many maintainers who will quickly answer questions if you are specific enough.
 * [Core Concepts of Angular 2](https://vsavkin.com/the-core-concepts-of-angular-2-c3d6cbe04d04#.5oqg2kdeb)
 * [Angular 2 Template Syntax](https://vsavkin.com/angular-2-template-syntax-5f2ee9f13c6a)
 * [Writing Angular 2 in TypeScript](https://vsavkin.com/writing-angular-2-in-typescript-1fa77c78d8e8)
