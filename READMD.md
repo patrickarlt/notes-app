@@ -113,7 +113,7 @@ I think this approach has a few advatages:
 
 * Few additional dependencies. Just RxJS which is already needed for most Angular 2 tasks like event handing and http requests. Many other app architectures involve additional dependencies on Redux and/or Immutable.js which feels like lots of bloat and additional APIs to learn.
 * Stores become a single point of truth for the application. All data flows down from Stores into components. Stores also act as a caching layer for holding data in memory so we can reduce the number of requests we have to make.
-* We can easily split functionality up between different stores such as, `ApplicationInfoStore`, `OAuthStore`, `ApplicationServicesStore`. Each of these can have their own corresponding backend service.
+* Functionality can easily be split up amoung many stores. For example I have both a `NotesStore` and a `SearchResultsStore` that handle different parts of the UI that the component combines into the proper display.
 
 ## Learning Angular 2.0
 
