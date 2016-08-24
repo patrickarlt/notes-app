@@ -90,7 +90,7 @@ Working with forms in the way I wanted too was rather difficult. I wanted to get
 
 Adding to the complexity if the fact that Angular 2 has 2 different form APIs. A deprecated one `angular2/forms` and the newer one `@angular/forms`. This is also componded by the fact that there are 2 different ways to create forms, the simpler "template driven" way shown in the official Angular 2 docs and the more complex "form builder".
 
-Overall though I think Angular 2 will easily meet our needs concerning forms since they are fairly standard and there are plenty of examples and documentation.
+Overall though I think Angular 2 will easily meet our needs concerning forms since they are fairly standard and there are plenty of examples and documentation. Things should also become clearer now that the older `angular2/forms` module is deprecated and removed in RC 5 (this app uses RC 4).
 
 ## App Architecture
 
@@ -98,13 +98,13 @@ Quite a bit has been written about the open ended nature of building Angular 2 a
 
 * [Managing state in Angular 2 applications](https://vsavkin.com/managing-state-in-angular-2-applications-caf78d123d02)
 * [How to build Angular 2 apps using Observable Data Services - Pitfalls to avoid](http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/)
-*[Angular 2 Application Architecture - Building Flux Apps with Redux and Immutable.js](http://blog.angular-university.io/angular-2-application-architecture-building-flux-like-apps-using-redux-and-immutable-js-js/)
+* [Angular 2 Application Architecture - Building Flux Apps with Redux and Immutable.js](http://blog.angular-university.io/angular-2-application-architecture-building-flux-like-apps-using-redux-and-immutable-js-js/)
 * [Angular 2 Application Architecture - Building Redux-like apps using RxJs](http://blog.angular-university.io/angular-2-application-architecture-building-applications-using-rxjs-and-functional-reactive-programming-vs-redux/)
 
-In the end I choose an approach based on a simplified version of [Observable Data Services](http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/). It works like this:
+In the end I choose an approach based on a simplified version of the [Observable Data Services](http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/) pattern. It works like this:
 
-* A "Store" service (`NotesStore`) exposes an Observable to components.
-* Components subscribe to the `Observable` to get updates whenever the data in the store changes.
+* A "Store" service (`NotesStore`) exposes an Observable (`notes`) to components.
+* Components subscribe to the `notes` Observable to get updates whenever the data in the store changes.
 * Components can update the store via "action methods" on the store, for example `updateNote()`, `deleteNote()`, ect... these methods alter the Observable causing ALL subscribers to the data to update.
 * Components never talk to the backend APIs directly. The `NotesStore` talks to a `NotesDatabase` service which handles the transactions.
 * Components should only get data via a subscription to an `Observable` exposed by a store or via an `@Input` those value will come from a stores `Observable`.
