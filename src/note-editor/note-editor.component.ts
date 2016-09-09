@@ -1,14 +1,9 @@
 import { Component, ViewChild, EventEmitter, Input, Output } from '@angular/core';
 import { Note } from '../shared/note';
-import { FORM_DIRECTIVES, FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { ViewEncapsulation } from '@angular/core';
-import { CodeMirrorEditorComponent } from '../codemirror-editor/codemirror-editor.component';
-import { TagInputComponent } from '../tag-input/tag-input.component';
 import { NotesStore } from '../shared/notes-store.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NotePreviewComponent } from '../note-preview/note-preview.component';
-import { RoundPipe } from '../shared/round.pipe';
-import { ScrollTopDirective } from '../shared/scrollTop.directive';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 
@@ -22,15 +17,7 @@ import 'rxjs/add/observable/combineLatest';
   template: require('./note-editor.component.html'),
   styles: [
     require('./note-editor.component.scss'),
-  ],
-  directives: [
-    CodeMirrorEditorComponent,
-    TagInputComponent,
-    NotePreviewComponent,
-    FORM_DIRECTIVES,
-    ScrollTopDirective
-  ],
-  pipes: [ RoundPipe ]
+  ]
 })
 export class NoteEditorComponent {
   /**

@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, Renderer } from '@angular/core';
-import { ROUTER_DIRECTIVES, Router }  from '@angular/router';
-import { FORM_DIRECTIVES, REACTIVE_FORM_DIRECTIVES, FormGroup, FormControl } from '@angular/forms';
+import { Router }  from '@angular/router';
+import { FormGroup, FormControl } from '@angular/forms';
 
 /**
  * The full install of rxjs is about 500kb which is way to large. Angular 2
@@ -42,15 +42,6 @@ import { Note } from '../shared/note';
    */
   styles: [
     require('./notes-list.component.scss')
-  ],
-
-  /**
-   * Register directives that we want to use inside this template.
-   */
-  directives: [
-    ROUTER_DIRECTIVES,
-    FORM_DIRECTIVES,
-    REACTIVE_FORM_DIRECTIVES
   ],
 
   /**
@@ -243,7 +234,7 @@ export class NotesListComponent implements OnInit, AfterViewInit, OnDestroy {
    * FormControl rather then via the DOM.
    */
   clearSearch () {
-    this.search.updateValue('');
+    this.search.setValue('');
   }
 
   /**

@@ -1,5 +1,4 @@
 import {Component, HostBinding, Input, Output, EventEmitter, forwardRef} from '@angular/core';
-import { TagInputItemComponent } from '../tag-input-item/tag-input-item.component';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
@@ -31,7 +30,6 @@ const noop = () => {};
   styles: [
     require('./tag-input.component.scss')
   ],
-  directives: [TagInputItemComponent],
   providers: [
     /**
      * This is a little magic supplied by several articles. Exactly what it does

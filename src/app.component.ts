@@ -1,7 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { ROUTER_DIRECTIVES } from '@angular/router';
 import { Database } from './shared/db';
-import { NotesListComponent } from './notes-list/notes-list.component';
 import { NotesDatabaseService } from './shared/notes-db.service';
 import { NotesStore } from './shared/notes-store.service';
 import { SearchResultsStore } from './shared/search-results-store.service';
@@ -46,14 +44,6 @@ import { SearchResultsStore } from './shared/search-results-store.service';
     NotesDatabaseService,
     NotesStore,
     SearchResultsStore
-  ],
-
-  /**
-   * Register directives that we want to use inside this template.
-   */
-  directives: [
-    NotesListComponent,
-    ROUTER_DIRECTIVES
   ]
 })
 export class AppComponent {}

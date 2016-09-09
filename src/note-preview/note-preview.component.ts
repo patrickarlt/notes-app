@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MarkdownPipe } from '../shared/markdown.pipe';
-import { ScrollTopDirective } from '../shared/scrollTop.directive';
+
 /**
  * The <note-preview> component handles displaying a rendered view of
  * Markdown content and syncing the scrollbars with its editor.
@@ -10,18 +9,7 @@ import { ScrollTopDirective } from '../shared/scrollTop.directive';
   template: require('./note-preview.component.html'),
   styles: [
     require('./note-preview.component.scss')
-  ],
-  /**
-   * Just like providers and directives we need to tell this component about
-   * pipes that are using.
-   */
-  pipes: [ MarkdownPipe ],
-
-  /**
-   * We also provide a custom attribute directive to control the scroll
-   * position of our preview.
-   */
-  directives: [ ScrollTopDirective ]
+  ]
 })
 export class NotePreviewComponent {
   /**

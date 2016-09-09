@@ -15,22 +15,13 @@ import 'reflect-metadata';
  * https://angular.io/docs/ts/latest/quickstart.html
  * https://angular.io/docs/ts/latest/guide/webpack.html
  */
-import { bootstrap } from '@angular/platform-browser-dynamic';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { enableProdMode } from '@angular/core';
 
 /**
  * Import the root level AppComponent and the routes for this app
  */
-import { AppComponent } from './app.component';
-import { appRouterProviders } from './app.routes';
-
-/**
- * Import the new Angualr 2 forms module. For now you also need to
- * call disableDeprecatedForms untile the next Angular 2 RC.
- *
- * https://angular.io/docs/ts/latest/guide/forms.html#!#bootstrap
- */
-import { disableDeprecatedForms, provideForms } from '@angular/forms';
+import { AppModule } from './app.module';
 
 /**
  * Require the Zone.js polyfill required for Angular 2's change detection.
@@ -63,9 +54,4 @@ if (process.env.ENV === 'production') {
  * https://angular.io/docs/ts/latest/guide/forms.html#!#bootstrap
  * https://angular.io/docs/ts/latest/guide/router.html#!#route-config
  */
-bootstrap(AppComponent, [
-  appRouterProviders,
-  disableDeprecatedForms(),
-  provideForms()
-])
-.catch(err => console.error(err));
+platformBrowserDynamic().bootstrapModule(AppModule);
